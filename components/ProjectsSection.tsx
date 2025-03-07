@@ -7,7 +7,7 @@ const projects = [
     description:
       "The Cloud Notebook project utilizes React and Express to deliver a dynamic, user-friendly digital notebook. React ensures an intuitive frontend, while Node.js and Express provide a secure backend. Implemented features for real-time note-taking and organization, enhancing productivity and usability.",
     githubUrl: "https://github.com/sujithm21/inotebok",
-    liveUrl: "#",
+    liveUrl: "https://cloud-notebook-mu.vercel.app/",
   },
   {
     title: "DailySphere",
