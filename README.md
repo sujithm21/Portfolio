@@ -3,7 +3,8 @@
 Personal site for **Sujith Makam**, AI & Cloud Engineer. Single-page, dark-first, statically
 exported and deployed on Vercel.
 
-**Live:** https://github.com/sujithm21/Portfolio
+**Live:** https://sujithmakam.vercel.app  
+**Repo:** https://github.com/sujithm21/Portfolio
 
 ---
 

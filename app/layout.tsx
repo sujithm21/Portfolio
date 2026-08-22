@@ -22,9 +22,9 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
 });
 
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://sujithmakam.vercel.app');
+// Pinned to the production domain so canonical/OG URLs never point at a
+// per-deployment hash hostname.
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sujithmakam.vercel.app';
 
 const description =
   'Sujith Makam — AI & Cloud Engineer building production agentic-AI systems, RAG platforms and AWS CDK infrastructure. 4 IEEE publications in ML and network security.';
@@ -50,8 +50,10 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: profile.name, url: profile.socials.github }],
   creator: profile.name,
+  alternates: { canonical: '/' },
   openGraph: {
     type: 'website',
+    url: siteUrl,
     title: `${profile.name} — ${profile.role}`,
     description,
     siteName: `${profile.name} · Portfolio`,
