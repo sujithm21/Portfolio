@@ -87,20 +87,6 @@ export const experience: Experience[] = [
     ],
     stack: ['LLM Pruning', 'GPT-2', 'Intel VTune', 'C++', 'Python', 'Performance Profiling'],
   },
-  {
-    company: 'SSTRUENCE',
-    role: 'Software Development Intern',
-    period: 'Jan 2024 — Mar 2024',
-    location: 'Remote',
-    kind: 'Internship',
-    points: [
-      'Engineered a responsive, user-facing section of the e-commerce platform in React.',
-      'Designed and shipped an AI chatbot that automated 80% of customer queries and served real-time product recommendations.',
-      'Integrated machine learning so the chatbot improved through continuous learning on live conversations.',
-      'Worked in an agile startup team alongside cross-functional stakeholders.',
-    ],
-    stack: ['React', 'AI Chatbot', 'Machine Learning', 'E-commerce', 'Agile'],
-  },
 ];
 
 export type Project = {
@@ -428,6 +414,7 @@ export type Publication = {
   year: string;
   summary: string;
   topics: string[];
+  url: string;
 };
 
 export const publications: Publication[] = [
@@ -439,6 +426,7 @@ export const publications: Publication[] = [
     summary:
       'Privacy-preserving federated learning for the Internet of Vehicles with blockchain-anchored model validation and a dual-model XAI feedback loop.',
     topics: ['Federated Learning', 'Blockchain', 'XAI', 'IoV'],
+    url: 'https://ieeexplore.ieee.org/document/11418113',
   },
   {
     title: 'Enhancing IoT Network Security through Adaptive Curriculum Learning and XAI',
@@ -447,6 +435,7 @@ export const publications: Publication[] = [
     summary:
       'An adaptive curriculum-learning intrusion detection framework with LIME validation, compressed for edge deployment.',
     topics: ['Curriculum Learning', 'IoT Security', 'XAI', 'Edge AI'],
+    url: 'https://ieeexplore.ieee.org/document/11317635',
   },
   {
     title:
@@ -456,6 +445,7 @@ export const publications: Publication[] = [
     summary:
       'A scalable federated architecture for network intrusion detection across distributed industrial IoT deployments.',
     topics: ['Federated Learning', 'Industrial IoT', 'Network IDS'],
+    url: 'https://ieeexplore.ieee.org/document/11317183',
   },
   {
     title:
@@ -465,6 +455,7 @@ export const publications: Publication[] = [
     summary:
       'A comparative study of regression models for estimating stellar metallicity in solar-twin candidates.',
     topics: ['Applied ML', 'Regression', 'Astrophysics'],
+    url: 'https://ieeexplore.ieee.org/document/11171345',
   },
 ];
 
