@@ -438,13 +438,12 @@ export const publications: Publication[] = [
     url: 'https://ieeexplore.ieee.org/document/11317635',
   },
   {
-    title:
-      'FedGuard-IIoT: A Scalable Federated Learning Architecture for Network-IDS in the Industrial IoT',
+    title: 'Scalable Marine AIS Architecture with FedMicro for Distributed Vessel Tracking',
     venue: 'IEEE FNWF',
     year: '2025',
     summary:
-      'A scalable federated architecture for network intrusion detection across distributed industrial IoT deployments.',
-    topics: ['Federated Learning', 'Industrial IoT', 'Network IDS'],
+      'A federated-learning microservices architecture for distributed vessel tracking that scales AIS analytics without exposing raw feeds — FedAvg aggregation in 10 ms, 406 ms inference, and SHAP feature attribution.',
+    topics: ['Federated Learning', 'Microservices', 'Maritime AIS', 'XAI (SHAP)'],
     url: 'https://ieeexplore.ieee.org/document/11317183',
   },
   {
