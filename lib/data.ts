@@ -525,28 +525,8 @@ export const resumeVariants: ResumeVariant[] = [
   },
   {
     label: 'AI Developer',
-    description: 'LLM applications, RAG and agentic systems',
+    description: 'LLM applications, agentic systems and GenAI delivery',
     file: '/resume/Sujith_Makam_AI_Developer.pdf',
-  },
-  {
-    label: 'Agentic AI / ML',
-    description: 'Multi-agent orchestration and AI governance',
-    file: '/resume/Sujith_Makam_Agentic_AI.pdf',
-  },
-  {
-    label: 'AWS & Cloud',
-    description: 'Serverless, CDK and contact-center infrastructure',
-    file: '/resume/Sujith_Makam_AWS_Cloud.pdf',
-  },
-  {
-    label: 'Conversational AI',
-    description: 'Cognigy, Genesys and omnichannel automation',
-    file: '/resume/Sujith_Makam_Conversational_AI.pdf',
-  },
-  {
-    label: 'Data & Fabric',
-    description: 'Microsoft Fabric, Lakehouse and analytics',
-    file: '/resume/Sujith_Makam_Data_Fabric.pdf',
   },
 ];
 

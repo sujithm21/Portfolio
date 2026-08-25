@@ -38,8 +38,8 @@ file and every section updates. Buckets:
 ## Résumés
 
 `public/resume/` holds the downloadable PDFs. `Sujith_Makam_Resume.pdf` is the default the nav
-button serves; the dropdown offers role-targeted variants (Cloud & AI, AI Developer, Agentic AI,
-AWS, Conversational AI, Data & Fabric). To refresh one, drop a new PDF in with the same filename.
+button serves; the dropdown offers two role-targeted variants (Cloud & AI, AI Developer).
+To refresh one, drop a new PDF in with the same filename.
 
 ## Structure
 
