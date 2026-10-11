@@ -477,6 +477,30 @@ export const certifications = [
   },
 ];
 
+export const featuredCertifications = [
+  {
+    name: 'AWS Certified Cloud Practitioner',
+    issuer: 'Amazon Web Services (AWS)',
+    exam: 'CLF-C02',
+    badge: '/aws-cloud-practitioner-badge.png',
+    skills: ['Amazon Web Services (AWS)', 'Cloud Computing'],
+  },
+  {
+    name: 'AWS AI Practitioner',
+    issuer: 'Amazon Web Services (AWS)',
+    exam: 'AIF-C01',
+    badge: '/aws-ai-practitioner-badge.png',
+    skills: [
+      'Artificial Intelligence (AI)',
+      'Amazon Web Services (AWS)',
+      'Generative AI',
+      'Amazon Bedrock',
+      'AWS SageMaker',
+      'Machine Learning',
+    ],
+  },
+];
+
 export const achievements = [
   {
     title: 'CGI Envision 2026 Hackathon — Top 13',
