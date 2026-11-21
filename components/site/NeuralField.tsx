@@ -30,13 +30,15 @@ export default function NeuralField() {
     if (!ctx) return;
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let assembling =
+      document.querySelector('.portfolio-stage')?.getAttribute('data-assembly-state') === 'building';
 
     let width = 0;
     let height = 0;
     let dpr = 1;
     let nodes: Node[] = [];
     let raf = 0;
-    let running = true;
+    let running = !document.hidden && !assembling;
     let t = 0;
 
     const pointer = { x: -9999, y: -9999, active: false };
@@ -176,7 +178,18 @@ export default function NeuralField() {
     };
 
     const onVisibility = () => {
-      if (document.hidden) {
+      if (document.hidden || assembling) {
+        running = false;
+        cancelAnimationFrame(raf);
+      } else if (!running) {
+        running = true;
+        raf = requestAnimationFrame(draw);
+      }
+    };
+
+    const onAssembly = (event: Event) => {
+      assembling = (event as CustomEvent<boolean>).detail;
+      if (assembling || document.hidden || reduced) {
         running = false;
         cancelAnimationFrame(raf);
       } else if (!running) {
@@ -198,7 +211,7 @@ export default function NeuralField() {
       draw();
       running = false;
       cancelAnimationFrame(raf);
-    } else {
+    } else if (running) {
       raf = requestAnimationFrame(draw);
     }
 
@@ -206,6 +219,7 @@ export default function NeuralField() {
     window.addEventListener('pointermove', onPointerMove, { passive: true });
     window.addEventListener('pointerleave', onPointerLeave);
     document.addEventListener('visibilitychange', onVisibility);
+    document.addEventListener('portfolio:assembly', onAssembly);
 
     return () => {
       running = false;
@@ -215,6 +229,7 @@ export default function NeuralField() {
       window.removeEventListener('pointermove', onPointerMove);
       window.removeEventListener('pointerleave', onPointerLeave);
       document.removeEventListener('visibilitychange', onVisibility);
+      document.removeEventListener('portfolio:assembly', onAssembly);
     };
   }, [resolvedTheme]);
 

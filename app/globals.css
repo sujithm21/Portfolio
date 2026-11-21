@@ -260,6 +260,239 @@
     background: hsl(var(--cyan));
     animation: blink 1.05s steps(2, start) infinite;
   }
+
+  .assembly-target-active {
+    outline: 1px dashed hsl(var(--assembly-selection, var(--cyan)) / 0.82);
+    outline-offset: 5px;
+    box-shadow: 0 0 0 1px hsl(var(--assembly-selection, var(--cyan)) / 0.12),
+      0 0 28px hsl(var(--assembly-selection, var(--cyan)) / 0.12);
+  }
+
+  .portfolio-stage {
+    display: contents;
+  }
+
+  .portfolio-stage[data-assembly-state='building'] .portfolio-content {
+    visibility: hidden;
+  }
+
+  .portfolio-stage[data-assembly-state='building'] .portfolio-content *,
+  .portfolio-stage[data-assembly-state='ready'] [data-assembly-section]:not([data-assembly-built='true']) * {
+    animation-play-state: paused !important;
+  }
+
+  .portfolio-stage[data-assembly-state='ready']
+    [data-assembly-section]:not([data-assembly-built='true']):not([data-assembly-building='true']) {
+    visibility: hidden;
+  }
+
+  .portfolio-stage[data-assembly-state='ready'] [data-assembly-section][data-assembly-built='true'] {
+    visibility: visible;
+  }
+
+  .portfolio-stage[data-assembly-state='ready'] [data-assembly-section][data-assembly-building='true'] {
+    visibility: visible;
+  }
+
+  .portfolio-stage[data-assembly-state='ready']
+    [data-assembly-section][data-assembly-building='true'] > .container > *,
+  .portfolio-stage[data-assembly-state='ready']
+    [data-assembly-section][data-assembly-building='true'] > *:not(.container) {
+    visibility: hidden;
+  }
+
+  .assembly-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 55;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 450ms ease;
+  }
+
+  .assembly-overlay.is-finishing {
+    opacity: 0;
+  }
+
+  .assembly-status,
+  .assembly-controls,
+  .assembly-complete {
+    position: fixed;
+    z-index: 56;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    border: 1px solid hsl(var(--hairline) / 0.78);
+    border-radius: 999px;
+    background: hsl(var(--background) / 0.82);
+    box-shadow: 0 12px 35px hsl(222 47% 4% / 0.18);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+  }
+
+  .assembly-status {
+    top: 78px;
+    left: 50%;
+    padding: 9px 14px;
+    color: hsl(var(--foreground) / 0.88);
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+
+  .assembly-status-dot {
+    width: 7px;
+    height: 7px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: hsl(var(--emerald));
+    box-shadow: 0 0 12px hsl(var(--emerald) / 0.72);
+  }
+
+  .assembly-status-divider,
+  .assembly-status-meta {
+    color: hsl(var(--muted-foreground));
+  }
+
+  .assembly-controls {
+    right: 22px;
+    bottom: 20px;
+    padding: 6px 7px 6px 13px;
+    color: hsl(var(--muted-foreground));
+    pointer-events: none;
+  }
+
+  .assembly-skip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    border: 1px solid hsl(var(--hairline));
+    border-radius: 999px;
+    background: hsl(var(--secondary) / 0.74);
+    padding: 7px 11px;
+    color: hsl(var(--foreground));
+    cursor: pointer;
+    pointer-events: auto;
+    transition: border-color 180ms ease, color 180ms ease, background 180ms ease;
+  }
+
+  .assembly-skip:hover,
+  .assembly-skip:focus-visible {
+    border-color: hsl(var(--cyan) / 0.55);
+    background: hsl(var(--cyan) / 0.1);
+    outline: none;
+  }
+
+  .assembly-cursor-canvas {
+    position: fixed;
+    z-index: 57;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    will-change: transform, opacity;
+    pointer-events: none;
+  }
+
+  .assembly-selection[data-tone='cyan'],
+  .assembly-guides[data-tone='cyan'] {
+    --assembly-selection: var(--cyan);
+  }
+
+  .assembly-selection[data-tone='violet'],
+  .assembly-guides[data-tone='violet'] {
+    --assembly-selection: var(--violet);
+  }
+
+  .assembly-selection[data-tone='emerald'],
+  .assembly-guides[data-tone='emerald'] {
+    --assembly-selection: var(--emerald);
+  }
+
+  .assembly-selection[data-tone='pink'],
+  .assembly-guides[data-tone='pink'] {
+    --assembly-selection: 338 92% 74%;
+  }
+
+  .assembly-selection[data-tone='blue'],
+  .assembly-guides[data-tone='blue'] {
+    --assembly-selection: 217 100% 72%;
+  }
+
+  .assembly-selection[data-tone='orange'],
+  .assembly-guides[data-tone='orange'] {
+    --assembly-selection: 24 96% 72%;
+  }
+
+  .assembly-selection {
+    position: fixed;
+    z-index: 54;
+    border: 1px solid hsl(var(--assembly-selection, var(--cyan)) / 0.9);
+    border-radius: 5px;
+    background: hsl(var(--assembly-selection) / 0.035);
+    box-shadow: 0 0 16px hsl(var(--assembly-selection) / 0.08);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 130ms linear;
+  }
+
+  .assembly-selection::after {
+    position: absolute;
+    right: -1px;
+    bottom: -19px;
+    border-radius: 3px;
+    background: hsl(var(--assembly-selection));
+    padding: 2px 4px;
+    color: hsl(var(--background));
+    content: var(--selection-width) ' × ' var(--selection-height);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .assembly-guides {
+    position: fixed;
+    z-index: 53;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 150ms ease;
+  }
+
+  .assembly-guides::before,
+  .assembly-guides::after {
+    position: absolute;
+    content: '';
+    border-color: hsl(var(--assembly-selection));
+    border-style: dotted;
+    opacity: 0.48;
+  }
+
+  .assembly-guides::before {
+    top: 0;
+    bottom: 0;
+    left: var(--guide-x);
+    border-left-width: 1px;
+  }
+
+  .assembly-guides::after {
+    right: 0;
+    left: 0;
+    top: var(--guide-y);
+    border-top-width: 1px;
+  }
+
+  .assembly-complete {
+    right: 22px;
+    bottom: 20px;
+    padding: 10px 14px;
+    color: hsl(var(--foreground));
+    animation: assembly-complete 1250ms ease both;
+  }
 }
 
 @layer utilities {
@@ -328,6 +561,49 @@
   }
   to {
     transform: translateX(-50%);
+  }
+}
+
+@keyframes assembly-click {
+  from {
+    opacity: 0.8;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.3);
+  }
+}
+
+@keyframes assembly-complete {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+  18%,
+  75% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+}
+
+@media (pointer: coarse), (max-width: 639px), (prefers-reduced-motion: reduce) {
+  .portfolio-stage[data-assembly-state='building'] .portfolio-content {
+    visibility: visible;
+  }
+
+  .portfolio-stage[data-assembly-state='ready'] [data-assembly-section] {
+    visibility: visible !important;
+  }
+
+  .assembly-overlay,
+  .assembly-controls,
+  .assembly-complete {
+    display: none !important;
   }
 }
 
