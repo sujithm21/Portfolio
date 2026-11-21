@@ -62,7 +62,7 @@ function ResumeMenu({ compact = false }: { compact?: boolean }) {
   }, []);
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} data-assembly="resume" className="relative">
       <div className="flex items-stretch overflow-hidden rounded-full border border-[hsl(var(--cyan)/0.35)] bg-[hsl(var(--cyan)/0.08)]">
         <a
           href={primaryResume}
@@ -191,12 +191,14 @@ export default function Nav() {
       >
         <div className="container">
           <nav
+            data-assembly="navigation"
             className={cn(
               'flex items-center justify-between rounded-full px-3 py-2 transition-all duration-300 sm:px-4',
               scrolled ? 'glass shadow-soft' : 'border border-transparent'
             )}
           >
             <button
+              data-assembly="brand"
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
               className="group flex items-center gap-2.5 pl-1 pr-2"
               aria-label="Back to top"
