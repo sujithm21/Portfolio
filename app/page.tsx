@@ -9,26 +9,29 @@ import Research from '@/components/site/Research';
 import Credentials from '@/components/site/Credentials';
 import Contact from '@/components/site/Contact';
 import Footer from '@/components/site/Footer';
+import WebsiteAssembly from '@/components/site/WebsiteAssembly';
 
 // Canvas background is browser-only and purely decorative.
 const NeuralField = dynamic(() => import('@/components/site/NeuralField'), { ssr: false });
 
 export default function Home() {
   return (
-    <>
-      <NeuralField />
-      <Nav />
-      <main className="relative">
-        <Hero />
-        <About />
-        <Experience />
-        <Projects />
-        <Skills />
-        <Research />
-        <Credentials />
-        <Contact />
-      </main>
-      <Footer />
-    </>
+    <WebsiteAssembly>
+      <>
+        <NeuralField />
+        <Nav />
+        <main className="relative">
+          <Hero />
+          <About />
+          <Experience />
+          <Projects />
+          <Skills />
+          <Research />
+          <Credentials />
+          <Contact />
+        </main>
+        <Footer />
+      </>
+    </WebsiteAssembly>
   );
 }

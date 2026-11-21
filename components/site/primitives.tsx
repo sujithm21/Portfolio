@@ -13,12 +13,14 @@ export function Reveal({
   delay = 0,
   y = 22,
   className,
+  dataAssembly,
   as = 'div',
 }: {
   children: React.ReactNode;
   delay?: number;
   y?: number;
   className?: string;
+  dataAssembly?: string;
   as?: 'div' | 'li' | 'span';
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -31,6 +33,8 @@ export function Reveal({
       initial={{ opacity: 0, y }}
       animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y }}
       transition={{ duration: 0.66, delay, ease: [0.22, 1, 0.36, 1] }}
+      data-assembly={dataAssembly}
+      data-assembly-block=""
       className={className}
     >
       {children}
@@ -67,7 +71,12 @@ export function Section({
   className?: string;
 }) {
   return (
-    <section id={id} className={cn('relative scroll-mt-24 py-20 sm:py-28', className)}>
+    <section
+      id={id}
+      data-assembly={`section-${id}`}
+      data-assembly-section={id}
+      className={cn('relative scroll-mt-24 py-20 sm:py-28', className)}
+    >
       <div className="container">{children}</div>
     </section>
   );
@@ -87,7 +96,10 @@ export function SectionHeading({
   align?: 'left' | 'center';
 }) {
   return (
-    <Reveal className={cn('mb-12 max-w-3xl', align === 'center' && 'mx-auto text-center')}>
+    <Reveal
+      dataAssembly={kicker.toLowerCase()}
+      className={cn('mb-12 max-w-3xl', align === 'center' && 'mx-auto text-center')}
+    >
       <div
         className={cn(
           'mb-4 flex items-center gap-3',

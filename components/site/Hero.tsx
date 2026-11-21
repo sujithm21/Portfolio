@@ -48,9 +48,25 @@ function CountUp({ value, suffix }: { value: number; suffix: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: '-40px' });
   const [display, setDisplay] = useState(0);
+  const [assemblyReady, setAssemblyReady] = useState(false);
 
   useEffect(() => {
     if (!inView) return;
+    const stage = document.querySelector('.portfolio-stage');
+    if (stage?.getAttribute('data-assembly-state') !== 'building') {
+      setAssemblyReady(true);
+      return;
+    }
+
+    const onAssembly = (event: Event) => {
+      if (!(event as CustomEvent<boolean>).detail) setAssemblyReady(true);
+    };
+    document.addEventListener('portfolio:assembly', onAssembly);
+    return () => document.removeEventListener('portfolio:assembly', onAssembly);
+  }, [inView]);
+
+  useEffect(() => {
+    if (!inView || !assemblyReady) return;
     const duration = 1400;
     const start = performance.now();
     let raf = 0;
@@ -63,7 +79,7 @@ function CountUp({ value, suffix }: { value: number; suffix: string }) {
     };
     raf = requestAnimationFrame(step);
     return () => cancelAnimationFrame(raf);
-  }, [inView, value]);
+  }, [assemblyReady, inView, value]);
 
   const isDecimal = !Number.isInteger(value);
   const shown = isDecimal
@@ -92,6 +108,7 @@ function StackPanel() {
   return (
     <div
       {...spotlightProps()}
+      data-assembly="hero-stack"
       className="glass spotlight relative w-full rounded-lg p-1.5 shadow-soft"
     >
       {/* window chrome */}
@@ -162,7 +179,7 @@ export default function Hero() {
   return (
     <section id="top" className="relative overflow-hidden pb-16 pt-32 sm:pb-24 sm:pt-40">
       {/* backdrop */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+      <div data-assembly="hero-background" aria-hidden className="pointer-events-none absolute inset-0 -z-10">
         <div className="grid-bg absolute inset-0 opacity-[0.55]" />
         <div
           className="aurora animate-float-a left-[-10%] top-[-12%] h-[46vw] w-[46vw] max-h-[560px] max-w-[560px]"
@@ -183,7 +200,7 @@ export default function Hero() {
           {/* ---- copy ---- */}
           <div>
             <Reveal>
-              <span className="glass inline-flex items-center gap-2 rounded-full py-1.5 pl-2 pr-3.5 font-mono text-[11px] tracking-wide text-muted-foreground">
+              <span data-assembly="availability" className="glass inline-flex items-center gap-2 rounded-full py-1.5 pl-2 pr-3.5 font-mono text-[11px] tracking-wide text-muted-foreground">
                 <span className="relative flex h-2 w-2">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--emerald))] opacity-75" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-[hsl(var(--emerald))]" />
@@ -193,20 +210,20 @@ export default function Hero() {
             </Reveal>
 
             <Reveal delay={0.08}>
-              <h1 className="mt-6 font-display text-[clamp(2.6rem,7.5vw,4.75rem)] font-bold leading-[0.98] tracking-tight">
+              <h1 data-assembly="hero-title" className="mt-6 font-display text-[clamp(2.6rem,7.5vw,4.75rem)] font-bold leading-[0.98] tracking-tight">
                 <span className="gradient-text">{profile.name}</span>
               </h1>
             </Reveal>
 
             <Reveal delay={0.14}>
-              <p className="mt-3 flex flex-wrap items-baseline gap-x-3 text-[clamp(1.1rem,3.2vw,1.6rem)] font-semibold">
+              <p data-assembly="hero-role" className="mt-3 flex flex-wrap items-baseline gap-x-3 text-[clamp(1.1rem,3.2vw,1.6rem)] font-semibold">
                 <span className="text-muted-foreground">I build</span>
                 <Typewriter words={profile.roles} />
               </p>
             </Reveal>
 
             <Reveal delay={0.2}>
-              <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground text-pretty sm:text-[1.0625rem]">
+              <p data-assembly="hero-copy" className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground text-pretty sm:text-[1.0625rem]">
                 {profile.tagline}
               </p>
             </Reveal>
@@ -225,7 +242,7 @@ export default function Hero() {
             </Reveal>
 
             <Reveal delay={0.32}>
-              <div className="mt-8 flex flex-wrap items-center gap-3">
+              <div data-assembly="hero-actions" className="mt-8 flex flex-wrap items-center gap-3">
                 <a
                   href="#projects"
                   className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full px-6 py-3 text-sm font-medium text-[hsl(var(--background))] shadow-glow transition-transform duration-300 hover:-translate-y-0.5"
@@ -273,7 +290,7 @@ export default function Hero() {
 
         {/* ---- metrics ---- */}
         <Reveal delay={0.4}>
-          <div className="mt-20 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-hairline bg-hairline lg:grid-cols-4">
+          <div data-assembly="hero-metrics" className="mt-20 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-hairline bg-hairline lg:grid-cols-4">
             {stats.map((stat) => (
               <div
                 key={stat.label}
