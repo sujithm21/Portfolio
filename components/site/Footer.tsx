@@ -19,7 +19,11 @@ const marqueeItems = [
 
 export default function Footer() {
   return (
-    <footer className="relative mt-10 overflow-hidden border-t border-hairline">
+    <footer
+      data-assembly="site-footer"
+      data-assembly-section="footer"
+      className="relative mt-10 overflow-hidden border-t border-hairline"
+    >
       {/* tech marquee */}
       <div className="relative flex overflow-hidden border-b border-hairline py-4">
         <div className="flex shrink-0 animate-marquee gap-8 pr-8">
@@ -45,7 +49,7 @@ export default function Footer() {
 
       <div className="container py-12">
         <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
-          <div className="max-w-sm">
+          <div data-assembly="footer" className="max-w-sm">
             <div className="flex items-center gap-2.5">
               <span className="grid h-9 w-9 place-items-center rounded-lg bg-gradient-to-br from-[hsl(var(--cyan))] to-[hsl(var(--violet))] font-display text-sm font-bold text-[hsl(var(--background))]">
                 SM
