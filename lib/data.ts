@@ -148,6 +148,8 @@ export const experience: Experience[] = [
     headline: 'Enterprise conversational and agentic AI, and the Infrastructure-as-Code behind it.',
     points: [
       'Designed and deployed enterprise conversational and agentic-AI solutions — task-specific agents on Azure AI Foundry, Google ADK and CrewAI, wired into Azure OpenAI, Cognigy, the Genesys CCaaS platform and AWS to automate customer-support workflows — reducing Average Handle Time (AHT) by **3–7 minutes**.',
+      'Designed and built an agentic AI voice assistant on NiCE Cognigy for retail store IT support: an LLM agent orchestrating **11 tools** verifies callers, triages POS and device issues, checks incident history, and creates or updates ServiceNow tickets through REST APIs, handing off to specialists with context passed in SIP headers.',
+      'Integrated Cognigy Voice Gateway with Genesys Cloud over **BYOC SIP trunks** (carriers, number routing, access control lists, Azure STT/TTS), and designed an automated evaluation framework that replays real call transcripts against the AI agent with **LLM-as-judge** scoring for resolution rate, accuracy and tone.',
       'Built an agentic QA platform on Amazon Bedrock that scores **100% of call transcripts** against **24 quality parameters**, automating **90%+ of QA** that was previously manual and sampled only a fraction of calls. **40,000+ calls** evaluated; later ported to Azure Functions and Cosmos DB.',
       'Shipped production LLM applications — AI call summarization and RAG pipelines over enterprise knowledge bases — on Azure OpenAI.',
       'Developed multi-agent workflows for autonomous, context-aware task execution across support operations, cutting manual intervention and improving SLA compliance.',
@@ -170,6 +172,7 @@ export const experience: Experience[] = [
       'Cosmos DB',
       'Cognigy',
       'Genesys',
+      'ServiceNow',
       'Microsoft Fabric',
     ],
   },
@@ -203,7 +206,9 @@ export type Project = {
   featured?: boolean;
 };
 
+/** Filter tabs. "Featured" is what the section opens on. */
 export const projectCategories = [
+  'Featured',
   'All',
   'Agentic AI',
   'Cloud & IaC',
@@ -283,6 +288,30 @@ export const projects: Project[] = [
     categories: ['Cloud & IaC'],
     metric: { value: '80%', label: 'less manual setup' },
     badge: 'Enterprise',
+    featured: true,
+  },
+  {
+    title: 'Conversational AI Voice Assistant',
+    blurb:
+      'An agentic AI voice assistant for a global retail chain’s store IT support desk, built on NiCE Cognigy with Azure speech services.',
+    points: [
+      'An LLM agent orchestrating 11 tools verifies the caller’s identity, triages POS and device issues, checks incident history, and creates or updates ServiceNow tickets through REST APIs. Complex cases go to human specialists with full context passed in SIP headers.',
+      'Integrated Cognigy Voice Gateway with Genesys Cloud over BYOC SIP trunks, covering carriers, number routing, access control lists and Azure STT/TTS, with automatic fallback to a human queue. Diagnosed call-routing failures end to end using SIP traces and the Cognigy APIs.',
+      'Designed an automated evaluation framework that replays real human-agent call transcripts against the AI agent, using LLM-as-judge scoring to benchmark resolution rate, accuracy and tone against human agents.',
+    ],
+    tags: [
+      'NiCE Cognigy',
+      'Genesys Cloud',
+      'BYOC SIP',
+      'ServiceNow',
+      'Azure STT/TTS',
+      'LLM-as-Judge',
+      'REST APIs',
+    ],
+    categories: ['Agentic AI'],
+    metric: { value: '11', label: 'tools orchestrated' },
+    badge: 'Enterprise',
+    featured: true,
   },
   {
     title: 'Enterprise Multi-Source Data Platform',
@@ -401,6 +430,8 @@ export const skillBuckets: SkillBucket[] = [
       'MCP',
       'A2A Protocol',
       'Conversational AI',
+      'Voice AI',
+      'LLM-as-Judge',
       'Responsible AI',
       'Human-in-the-Loop',
       'LLM Pruning',
@@ -422,8 +453,11 @@ export const skillBuckets: SkillBucket[] = [
       'Agent Gateway',
       'Vertex AI',
       'Dialogflow CX',
-      'Cognigy',
-      'Genesys',
+      'NiCE Cognigy',
+      'Cognigy Voice Gateway',
+      'Genesys Cloud',
+      'Azure Speech (STT/TTS)',
+      'ServiceNow',
     ],
   },
   {
@@ -477,6 +511,7 @@ export const skillBuckets: SkillBucket[] = [
       'REST APIs',
       'WebSockets',
       'JSON-RPC',
+      'SIP / BYOC Trunking',
       'Pydantic',
       'Microservices',
       'Serverless',

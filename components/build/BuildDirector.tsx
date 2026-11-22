@@ -51,7 +51,6 @@ export default function BuildDirector() {
     if (!layer || (mode !== 'first' && mode !== 'return')) return;
 
     const scope = new Scope();
-    const total = document.querySelectorAll('[data-b]').length;
     let building = mode === 'first';
     let crew: Crew | null = null;
     let lineId = 0;
@@ -80,7 +79,9 @@ export default function BuildDirector() {
       setLines((current) =>
         current.map((line) => (line.text === name ? { ...line, done: true } : line))
       );
-      const built = document.querySelectorAll('[data-b][data-built]').length;
+      // Cards hidden by the project filter are not part of the build.
+      const total = document.querySelectorAll('[data-b]:not([hidden])').length;
+      const built = document.querySelectorAll('[data-b][data-built]:not([hidden])').length;
       setProgress(Math.round((built / total) * 100));
       if (built >= total) showPanel('done', 2800);
     };

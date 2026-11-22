@@ -4,7 +4,7 @@ import { useRef, useState, type CSSProperties } from 'react';
 import { flushSync } from 'react-dom';
 import { Plus } from 'lucide-react';
 import type { AgentId } from '@/lib/agents';
-import { projectCategories, projects, type ProjectBadge } from '@/lib/data';
+import { projectCategories, projects, type Project, type ProjectBadge } from '@/lib/data';
 import { cn, slugify } from '@/lib/utils';
 import { GitHubIcon } from './icons';
 import { Section } from './ui';
@@ -16,13 +16,20 @@ const badgeAgent: Record<ProjectBadge, AgentId> = {
   'Open Source': 'deployer',
 };
 
+/** The tab the section opens on: a hand-picked set rather than everything. */
+const FEATURED = 'Featured';
+
+const matches = (project: Project, category: string) => {
+  if (category === 'All') return true;
+  if (category === FEATURED) return Boolean(project.featured);
+  return project.categories.includes(category);
+};
+
 const countFor = (category: string) =>
-  category === 'All'
-    ? projects.length
-    : projects.filter((project) => project.categories.includes(category)).length;
+  projects.filter((project) => matches(project, category)).length;
 
 export default function Projects() {
-  const [active, setActive] = useState('All');
+  const [active, setActive] = useState(FEATURED);
   const [expanded, setExpanded] = useState<string[]>([]);
   const gridRef = useRef<HTMLDivElement>(null);
 
@@ -63,7 +70,7 @@ export default function Projects() {
       index="03"
       label="Projects"
       title="Built, shipped, *measured.*"
-      intro="Enterprise platforms, published research and side projects. Filter by the kind of problem."
+      intro="Featured builds first. Switch to All for published research and side projects, or filter by the kind of problem."
     >
       <div
         data-b="projects/filters"
@@ -94,7 +101,8 @@ export default function Projects() {
       <div ref={gridRef} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
         {projects.map((project, i) => {
           const slug = slugify(project.title);
-          const visible = active === 'All' || project.categories.includes(active);
+          const visible = matches(project, active);
+          const wide = project.featured && (active === 'All' || active === FEATURED);
           const open = project.featured || expanded.includes(slug);
 
           return (
@@ -109,8 +117,8 @@ export default function Projects() {
               className={cn(
                 'project-card card selectable flex flex-col p-6 sm:p-7',
                 project.featured && 'is-featured',
-                // Featured cards are wide in the full list; a filtered list is an even grid.
-                project.featured && active === 'All' ? 'lg:col-span-3' : 'lg:col-span-2'
+                // Featured cards are wide in the Featured and All views; a category is an even grid.
+                wide ? 'lg:col-span-3' : 'lg:col-span-2'
               )}
             >
               <div className="flex items-center gap-3">
@@ -120,7 +128,9 @@ export default function Projects() {
                 >
                   {project.badge}
                 </span>
-                {project.featured && <span className="eyebrow">Featured</span>}
+                {project.featured && active !== FEATURED && (
+                  <span className="eyebrow">Featured</span>
+                )}
                 {project.github && (
                   <a
                     href={project.github}
