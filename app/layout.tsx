@@ -87,25 +87,24 @@ const jsonLd = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#f6f5f1' },
-    { media: '(prefers-color-scheme: dark)', color: '#08080a' },
-  ],
+  // The site opens in its light theme whatever the system setting is.
+  themeColor: '#f6f5f1',
 };
 
 /**
- * Runs before first paint. It applies the saved theme and sets the build mode:
+ * Runs before first paint. The site is light by default; this applies a saved
+ * dark choice, and sets the build mode:
  * "first" (the cursors build the page, on every load) or "off" (reduced
  * motion). If the page script never starts, it falls back to "off" so content
  * can never stay hidden.
  */
-const bootScript = `(function(){var d=document.documentElement;try{if(localStorage.getItem('theme')==='light')d.classList.remove('dark')}catch(e){}d.dataset.build=matchMedia('(prefers-reduced-motion: reduce)').matches?'off':'first';setTimeout(function(){if(!window.__buildReady)d.dataset.build='off'},4000)})()`;
+const bootScript = `(function(){var d=document.documentElement;try{if(localStorage.getItem('theme')==='dark')d.classList.add('dark')}catch(e){}d.dataset.build=matchMedia('(prefers-reduced-motion: reduce)').matches?'off':'first';setTimeout(function(){if(!window.__buildReady)d.dataset.build='off'},4000)})()`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
-      className={`dark ${GeistSans.variable} ${GeistMono.variable} ${instrumentSerif.variable}`}
+      className={`${GeistSans.variable} ${GeistMono.variable} ${instrumentSerif.variable}`}
       suppressHydrationWarning
     >
       <head>
