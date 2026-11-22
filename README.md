@@ -26,7 +26,7 @@ you, section by section.
   content is readable with JavaScript disabled, and nothing animates for visitors who prefer
   reduced motion.
 - **One content file.** All text, links and numbers live in [`lib/data.ts`](lib/data.ts).
-- **Light and dark themes**, dark by default, with a circular reveal when you switch.
+- **Light and dark themes**, light by default, with a circular reveal when you switch.
 
 ## Tech stack
 
