@@ -1,21 +1,20 @@
-'use client';
-
 import {
   Brain,
   Cloud,
-  Code2,
+  Code,
   Database,
   Layers,
   Server,
   ShieldCheck,
   Sparkles,
   Wrench,
-  type LucideIcon,
 } from 'lucide-react';
+import { agents } from '@/lib/agents';
 import { skillBuckets } from '@/lib/data';
-import { Reveal, Section, SectionHeading, spotlightProps } from './primitives';
+import { slugify } from '@/lib/utils';
+import { b, IconTile, Section } from './ui';
 
-const iconMap: Record<string, LucideIcon> = {
+const icons = {
   brain: Brain,
   sparkles: Sparkles,
   cloud: Cloud,
@@ -23,69 +22,48 @@ const iconMap: Record<string, LucideIcon> = {
   server: Server,
   database: Database,
   layers: Layers,
-  code: Code2,
+  code: Code,
   wrench: Wrench,
-};
-
-// Alternating accent so the grid reads as a system rather than a list.
-const tones = ['violet', 'cyan', 'cyan', 'emerald', 'cyan', 'violet', 'cyan', 'violet', 'emerald'];
+} as const;
 
 export default function Skills() {
   return (
-    <Section id="skills">
-      <SectionHeading
-        index="04"
-        kicker="Skills"
-        title={
-          <>
-            The <span className="accent-text">toolkit</span>, by bucket
-          </>
-        }
-        intro="Everything below is something I have used to ship or publish — grouped the way I actually reach for it."
-      />
-
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <Section
+      id="skills"
+      index="04"
+      label="Technical Skills"
+      title="The *toolkit.*"
+      intro="Everything here has shipped or been published, grouped the way I actually reach for it."
+    >
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {skillBuckets.map((bucket, i) => {
-          const Icon = iconMap[bucket.icon] ?? Code2;
-          const tone = tones[i % tones.length];
-
+          const Icon = icons[bucket.icon as keyof typeof icons];
+          const slug = slugify(bucket.name);
           return (
-            <Reveal key={bucket.name} delay={Math.min(i * 0.05, 0.35)}>
-              <div
-                {...spotlightProps()}
-                className="glass spotlight group flex h-full flex-col rounded-lg p-5"
-              >
-                <div className="mb-4 flex items-center gap-3">
-                  <span
-                    className="grid h-9 w-9 shrink-0 place-items-center rounded-md transition-transform duration-300 group-hover:scale-110"
-                    style={{
-                      background: `hsl(var(--${tone}) / 0.12)`,
-                      border: `1px solid hsl(var(--${tone}) / 0.28)`,
-                      color: `hsl(var(--${tone}))`,
-                    }}
-                  >
-                    <Icon className="h-[17px] w-[17px]" />
-                  </span>
-                  <h3 className="font-display text-[15px] font-semibold leading-tight">
-                    {bucket.name}
-                  </h3>
-                  <span className="ml-auto font-mono text-[10px] text-muted-foreground">
-                    {String(bucket.items.length).padStart(2, '0')}
-                  </span>
-                </div>
-
-                <div className="flex flex-wrap gap-1.5">
-                  {bucket.items.map((item) => (
-                    <span
-                      key={item}
-                      className="rounded-md border border-hairline bg-secondary/50 px-2.5 py-1 font-mono text-[11px] text-muted-foreground transition-colors duration-200 hover:border-[hsl(var(--cyan)/0.4)] hover:bg-[hsl(var(--cyan)/0.08)] hover:text-foreground"
-                    >
-                      {item}
-                    </span>
-                  ))}
-                </div>
+            <div
+              key={bucket.name}
+              {...b(`skills/${slug}`, i % 3)}
+              data-frame={`skills/${slug}`}
+              data-tilt
+              className="card selectable p-6"
+            >
+              <div className="flex items-center gap-3.5">
+                <IconTile agent={agents[i % agents.length].id}>
+                  <Icon className="size-5" />
+                </IconTile>
+                <h3 className="font-semibold tracking-tight">{bucket.name}</h3>
+                <span className="ml-auto font-mono text-xs text-ink-faint">
+                  {String(bucket.items.length).padStart(2, '0')}
+                </span>
               </div>
-            </Reveal>
+              <ul className="mt-5 flex flex-wrap gap-1.5">
+                {bucket.items.map((item) => (
+                  <li key={item} className="tag">
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
           );
         })}
       </div>

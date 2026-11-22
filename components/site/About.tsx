@@ -1,117 +1,90 @@
-'use client';
+import { Bot, ChartLine, Cloud, GraduationCap, ShieldCheck } from 'lucide-react';
+import type { AgentId } from '@/lib/agents';
+import { beyondWork, education, pillars, profile } from '@/lib/data';
+import { b, IconTile, Rich, Section } from './ui';
 
-import { Bot, Cloud, GraduationCap, LineChart, ShieldCheck } from 'lucide-react';
-import { education, profile } from '@/lib/data';
-import { GlassCard, Reveal, Section, SectionHeading } from './primitives';
-
-const pillars = [
-  {
-    icon: Bot,
-    title: 'Agentic AI systems',
-    body: 'Multi-agent orchestration, MCP tooling and A2A messaging — with evaluation and guardrails baked in, not bolted on.',
-    tone: 'violet',
-  },
-  {
-    icon: Cloud,
-    title: 'Cloud infrastructure',
-    body: 'AWS CDK and Infrastructure-as-Code for contact-center platforms — repeatable, reviewable, multi-region by default.',
-    tone: 'cyan',
-  },
-  {
-    icon: ShieldCheck,
-    title: 'Reliability engineering',
-    body: 'Disaster recovery, automated failover, alerting and observability that keeps production honest.',
-    tone: 'emerald',
-  },
-  {
-    icon: LineChart,
-    title: 'Data platforms',
-    body: 'Governed Medallion Lakehouses on Microsoft Fabric feeding real-time analytics and Power BI.',
-    tone: 'cyan',
-  },
-];
+const pillarIcons = { bot: Bot, cloud: Cloud, shield: ShieldCheck, chart: ChartLine } as const;
 
 export default function About() {
   return (
-    <Section id="about">
-      <SectionHeading
-        index="01"
-        kicker="About"
-        title={
-          <>
-            Applied AI, running on <span className="accent-text">infrastructure I own</span>
-          </>
-        }
-      />
-
-      <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14">
-        <div>
-          {profile.summary.map((para, i) => (
-            <Reveal key={i} delay={i * 0.08}>
-              <p className="mb-5 text-base leading-[1.75] text-muted-foreground text-pretty sm:text-[1.0625rem]">
-                {para}
-              </p>
-            </Reveal>
+    <Section
+      id="about"
+      index="01"
+      label="About"
+      title="LLM, agentic and GenAI systems, *in production.*"
+    >
+      <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
+        <div className="space-y-6 lg:col-span-7">
+          {profile.summary.map((paragraph, i) => (
+            <p
+              key={i}
+              {...b(`about/summary-${i + 1}`, i)}
+              className="scrub text-xl leading-relaxed text-pretty text-ink-soft sm:text-[1.4rem] sm:leading-[1.6]"
+            >
+              <Rich text={paragraph} scrub />
+            </p>
           ))}
-
-          <div className="mt-8 grid gap-4 sm:grid-cols-2">
-            {pillars.map((pillar, i) => (
-              <Reveal key={pillar.title} delay={0.1 + i * 0.07}>
-                <GlassCard className="h-full p-5">
-                  <span
-                    className="mb-3 grid h-10 w-10 place-items-center rounded-md"
-                    style={{
-                      background: `hsl(var(--${pillar.tone}) / 0.12)`,
-                      border: `1px solid hsl(var(--${pillar.tone}) / 0.28)`,
-                      color: `hsl(var(--${pillar.tone}))`,
-                    }}
-                  >
-                    <pillar.icon className="h-[18px] w-[18px]" />
-                  </span>
-                  <h3 className="font-display text-[15px] font-semibold">{pillar.title}</h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                    {pillar.body}
-                  </p>
-                </GlassCard>
-              </Reveal>
-            ))}
-          </div>
         </div>
 
-        <div className="space-y-4">
-          <Reveal delay={0.12}>
-            <GlassCard className="overflow-hidden p-0">
-              <div className="border-b border-hairline px-6 py-4">
-                <p className="kicker">Education</p>
-              </div>
-              <div className="p-6">
-                <span className="mb-4 grid h-11 w-11 place-items-center rounded-md border border-[hsl(var(--cyan)/0.28)] bg-[hsl(var(--cyan)/0.1)] text-[hsl(var(--cyan))]">
-                  <GraduationCap className="h-5 w-5" />
-                </span>
-                <h3 className="font-display text-lg font-semibold leading-snug">
+        <div className="space-y-4 lg:col-span-5">
+          <div
+            {...b('about/education', 1)}
+            data-frame="about/education"
+            className="card selectable p-6"
+          >
+            <div className="flex items-start gap-4">
+              <IconTile agent="builder">
+                <GraduationCap className="size-5" />
+              </IconTile>
+              <div>
+                <p className="eyebrow">Education</p>
+                <h3 className="mt-2 text-lg leading-snug font-semibold tracking-tight">
                   {education.institution}
                 </h3>
-                <p className="mt-1.5 text-sm text-muted-foreground">{education.degree}</p>
-                <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-xs text-muted-foreground">
-                  <span>{education.period}</span>
-                  <span className="rounded-full border border-[hsl(var(--emerald)/0.3)] bg-[hsl(var(--emerald)/0.1)] px-2 py-0.5 text-[hsl(var(--emerald))]">
-                    {education.score}
-                  </span>
-                </div>
+                <p className="mt-1 text-sm text-ink-soft">{education.degree}</p>
+                <p className="mt-3 flex flex-wrap items-center gap-2 font-mono text-xs text-ink-faint">
+                  {education.period}
+                  <span className="tag">{education.score}</span>
+                </p>
               </div>
-            </GlassCard>
-          </Reveal>
+            </div>
+          </div>
 
-          <Reveal delay={0.18}>
-            <GlassCard className="p-6" interactive={false}>
-              <p className="kicker mb-4">Beyond the terminal</p>
-              <p className="text-sm leading-relaxed text-muted-foreground">
-                Outside work I read widely, play badminton, and sing — music has been the constant
-                counterweight to engineering for as long as I have been writing code.
-              </p>
-            </GlassCard>
-          </Reveal>
+          <div {...b('about/now', 2)} data-frame="about/now" className="card selectable p-6">
+            <p className="eyebrow">Right now</p>
+            <p className="mt-2 text-lg font-semibold tracking-tight">{profile.currently}</p>
+            <p className="mt-1 text-sm leading-relaxed text-ink-soft">
+              Building enterprise agentic-AI platforms and the AWS infrastructure underneath them,
+              from {profile.location}.
+            </p>
+          </div>
+
+          <div {...b('about/beyond', 3)} data-frame="about/beyond" className="card selectable p-6">
+            <p className="eyebrow">Beyond the terminal</p>
+            <p className="mt-2 text-sm leading-relaxed text-ink-soft">{beyondWork}</p>
+          </div>
         </div>
+      </div>
+
+      <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {pillars.map((pillar, i) => {
+          const Icon = pillarIcons[pillar.icon as keyof typeof pillarIcons];
+          return (
+            <div
+              key={pillar.title}
+              {...b(`about/pillar-${i + 1}`, i)}
+              data-frame={`pillar-${i + 1}`}
+              data-tilt
+              className="card selectable p-6"
+            >
+              <IconTile agent={pillar.agent as AgentId}>
+                <Icon className="size-5" />
+              </IconTile>
+              <h3 className="mt-5 font-semibold tracking-tight">{pillar.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-ink-soft">{pillar.body}</p>
+            </div>
+          );
+        })}
       </div>
     </Section>
   );

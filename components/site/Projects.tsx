@@ -1,205 +1,221 @@
 'use client';
 
-import { forwardRef, useMemo, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronDown, Github, Lock, Sparkles } from 'lucide-react';
-import { projectCategories, projects, type Project } from '@/lib/data';
-import { Pill, Reveal, Section, SectionHeading, spotlightProps } from './primitives';
-import { cn } from '@/lib/utils';
+import { useRef, useState, type CSSProperties } from 'react';
+import { flushSync } from 'react-dom';
+import { Plus } from 'lucide-react';
+import type { AgentId } from '@/lib/agents';
+import { projectCategories, projects, type Project, type ProjectBadge } from '@/lib/data';
+import { cn, slugify } from '@/lib/utils';
+import { GitHubIcon } from './icons';
+import { Section } from './ui';
 
-const badgeTone: Record<NonNullable<Project['badge']>, string> = {
-  Enterprise: 'cyan',
-  Research: 'violet',
-  Hackathon: 'emerald',
-  'Open Source': 'cyan',
+const badgeAgent: Record<ProjectBadge, AgentId> = {
+  Enterprise: 'builder',
+  Research: 'planner',
+  Hackathon: 'qa',
+  'Open Source': 'deployer',
 };
 
-const ProjectCard = forwardRef<
-  HTMLDivElement,
-  { project: Project; index: number }
->(function ProjectCard({ project, index }, ref) {
-  const [open, setOpen] = useState(false);
-  const tone = project.badge ? badgeTone[project.badge] : 'cyan';
+/** The tab the section opens on: a hand-picked set rather than everything. */
+const FEATURED = 'Featured';
+
+const matches = (project: Project, category: string) => {
+  if (category === 'All') return true;
+  if (category === FEATURED) return Boolean(project.featured);
+  return project.categories.includes(category);
+};
+
+const countFor = (category: string) =>
+  projects.filter((project) => matches(project, category)).length;
+
+export default function Projects() {
+  const [active, setActive] = useState(FEATURED);
+  const [expanded, setExpanded] = useState<string[]>([]);
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  const select = (category: string) => {
+    if (category === active) return;
+
+    // Cards that have not scrolled into view yet must not stay hidden once the
+    // grid is rearranged, so mark them all as built.
+    gridRef.current
+      ?.querySelectorAll('[data-b]')
+      .forEach((card) => card.setAttribute('data-built', ''));
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!document.startViewTransition || reduceMotion) {
+      setActive(category);
+      return;
+    }
+
+    // Let the browser animate each card from its old position to its new one.
+    const root = document.documentElement;
+    root.setAttribute('data-vt', 'filter');
+    const transition = document.startViewTransition(() => {
+      flushSync(() => setActive(category));
+    });
+    transition.finished.finally(() => {
+      root.removeAttribute('data-vt');
+    });
+  };
+
+  const toggle = (slug: string) =>
+    setExpanded((current) =>
+      current.includes(slug) ? current.filter((item) => item !== slug) : [...current, slug]
+    );
 
   return (
-    <motion.article
-      ref={ref}
-      layout
-      initial={{ opacity: 0, y: 18 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10, scale: 0.98 }}
-      transition={{ duration: 0.4, delay: Math.min(index * 0.05, 0.3), ease: [0.22, 1, 0.36, 1] }}
-      {...spotlightProps()}
-      className={cn(
-        'glass spotlight group flex h-full flex-col rounded-lg p-6',
-        project.featured && 'border-[hsl(var(--cyan)/0.28)]'
-      )}
+    <Section
+      id="projects"
+      index="03"
+      label="Projects"
+      title="Built, shipped, *measured.*"
+      intro="Featured builds first. Switch to All for published research and side projects, or filter by the kind of problem."
     >
-      <div className="mb-3 flex items-start justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-2">
-          {project.badge && (
-            <span
-              className="rounded-full px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em]"
-              style={{
-                background: `hsl(var(--${tone}) / 0.1)`,
-                border: `1px solid hsl(var(--${tone}) / 0.3)`,
-                color: `hsl(var(--${tone}))`,
-              }}
-            >
-              {project.badge}
-            </span>
-          )}
-          {project.featured && (
-            <span className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-              <Sparkles className="h-3 w-3 text-[hsl(var(--cyan))]" />
-              Featured
-            </span>
-          )}
-        </div>
-
-        {project.github ? (
-          <a
-            href={project.github}
-            target="_blank"
-            rel="noreferrer"
-            aria-label={`${project.title} on GitHub`}
-            className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-hairline text-muted-foreground transition-colors hover:border-[hsl(var(--cyan)/0.5)] hover:text-[hsl(var(--cyan))]"
+      <div
+        data-b="projects/filters"
+        role="group"
+        aria-label="Filter projects"
+        className="-mx-5 mb-8 flex [scrollbar-width:none] gap-2 overflow-x-auto px-5 pb-1 sm:mx-0 sm:flex-wrap sm:px-0"
+      >
+        {projectCategories.map((category) => (
+          <button
+            key={category}
+            type="button"
+            aria-pressed={active === category}
+            data-cursor="Filter"
+            onClick={() => select(category)}
+            className={cn(
+              'inline-flex h-10 shrink-0 items-center gap-2 rounded-full border px-4 text-sm font-medium transition-colors duration-200',
+              active === category
+                ? 'border-ink bg-ink text-canvas'
+                : 'border-line-strong text-ink-soft hover:border-ink-faint hover:text-ink'
+            )}
           >
-            <Github className="h-3.5 w-3.5" />
-          </a>
-        ) : (
-          <span
-            title="Internal / proprietary work"
-            className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-hairline text-muted-foreground/60"
-          >
-            <Lock className="h-3.5 w-3.5" />
-          </span>
-        )}
-      </div>
-
-      <h3 className="font-display text-lg font-semibold leading-snug tracking-tight transition-colors group-hover:text-[hsl(var(--cyan))]">
-        {project.title}
-      </h3>
-      <p className="mt-2 text-sm leading-relaxed text-muted-foreground text-pretty">
-        {project.blurb}
-      </p>
-
-      {project.metric && (
-        <div className="mt-4 flex items-baseline gap-2 rounded-md border border-hairline bg-secondary/40 px-3 py-2">
-          <span className="accent-text font-display text-lg font-bold">{project.metric.value}</span>
-          <span className="font-mono text-[11px] text-muted-foreground">{project.metric.label}</span>
-        </div>
-      )}
-
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="overflow-hidden"
-          >
-            <ul className="mt-4 space-y-2.5 border-l border-[hsl(var(--cyan)/0.3)] pl-4">
-              {project.points.map((point) => (
-                <li key={point} className="text-[13px] leading-relaxed text-muted-foreground">
-                  {point}
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <div className="mt-5 flex flex-wrap gap-1.5">
-        {project.tags.slice(0, 5).map((tag) => (
-          <Pill key={tag}>{tag}</Pill>
+            {category}
+            <span className="font-mono text-[11px] opacity-60">{countFor(category)}</span>
+          </button>
         ))}
       </div>
 
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="mt-5 inline-flex items-center gap-1.5 self-start font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-[hsl(var(--cyan))]"
-      >
-        {open ? 'Hide details' : 'What I built'}
-        <ChevronDown className={cn('h-3.5 w-3.5 transition-transform', open && 'rotate-180')} />
-      </button>
-    </motion.article>
-  );
-});
+      <div ref={gridRef} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
+        {projects.map((project, i) => {
+          const slug = slugify(project.title);
+          const visible = matches(project, active);
+          const wide = project.featured && (active === 'All' || active === FEATURED);
+          const open = project.featured || expanded.includes(slug);
 
-export default function Projects() {
-  const [filter, setFilter] = useState('All');
+          return (
+            <article
+              key={slug}
+              hidden={!visible}
+              data-b={`projects/${slug}`}
+              data-frame={`projects/${slug}`}
+              data-tilt
+              data-cursor="Inspect"
+              style={{ '--i': i % 3, '--vt': `project-${slug}` } as CSSProperties}
+              className={cn(
+                'project-card card selectable flex flex-col p-6 sm:p-7',
+                project.featured && 'is-featured',
+                // Featured cards are wide in the Featured and All views; a category is an even grid.
+                wide ? 'lg:col-span-3' : 'lg:col-span-2'
+              )}
+            >
+              <div className="flex items-center gap-3">
+                <span
+                  data-agent={badgeAgent[project.badge]}
+                  className="inline-flex h-6 items-center rounded-full border border-agent/30 bg-agent/10 px-2.5 font-mono text-[10px] font-medium tracking-wider text-agent uppercase"
+                >
+                  {project.badge}
+                </span>
+                {project.featured && active !== FEATURED && (
+                  <span className="eyebrow">Featured</span>
+                )}
+                {project.github && (
+                  <a
+                    href={project.github}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={`${project.title} on GitHub`}
+                    className="ml-auto text-ink-faint transition-colors hover:text-ink"
+                  >
+                    <GitHubIcon className="size-[18px]" />
+                  </a>
+                )}
+              </div>
 
-  const filtered = useMemo(
-    () =>
-      filter === 'All'
-        ? projects
-        : projects.filter((p) => p.categories.includes(filter)),
-    [filter]
-  );
-
-  const counts = useMemo(() => {
-    const map: Record<string, number> = { All: projects.length };
-    projectCategories.slice(1).forEach((cat) => {
-      map[cat] = projects.filter((p) => p.categories.includes(cat)).length;
-    });
-    return map;
-  }, []);
-
-  return (
-    <Section id="projects">
-      <SectionHeading
-        index="03"
-        kicker="Projects"
-        title={
-          <>
-            Things I have <span className="accent-text">built and shipped</span>
-          </>
-        }
-        intro="Enterprise platforms, published research and side projects — filtered by the bucket they belong to."
-      />
-
-      <Reveal>
-        <div className="no-scrollbar -mx-6 mb-10 flex gap-2 overflow-x-auto px-6 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
-          {projectCategories.map((category) => {
-            const active = filter === category;
-            return (
-              <button
-                key={category}
-                onClick={() => setFilter(category)}
+              <h3
                 className={cn(
-                  'relative shrink-0 rounded-full border px-4 py-2 text-sm transition-colors duration-200',
-                  active
-                    ? 'border-[hsl(var(--cyan)/0.45)] text-foreground'
-                    : 'border-hairline text-muted-foreground hover:border-[hsl(var(--cyan)/0.3)] hover:text-foreground'
+                  'mt-5 leading-tight font-semibold tracking-[-0.03em] text-balance',
+                  project.featured ? 'text-2xl sm:text-[1.75rem]' : 'text-xl'
                 )}
               >
-                {active && (
-                  <motion.span
-                    layoutId="project-filter"
-                    transition={{ type: 'spring', stiffness: 380, damping: 32 }}
-                    className="absolute inset-0 -z-10 rounded-full bg-[hsl(var(--cyan)/0.1)]"
-                  />
-                )}
-                {category}
-                <span className="ml-2 font-mono text-[10px] text-muted-foreground">
-                  {counts[category]}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </Reveal>
+                {project.title}
+              </h3>
+              <p className="mt-2.5 leading-relaxed text-pretty text-ink-soft">{project.blurb}</p>
 
-      <motion.div layout className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        <AnimatePresence mode="popLayout">
-          {filtered.map((project, i) => (
-            <ProjectCard key={project.title} project={project} index={i} />
-          ))}
-        </AnimatePresence>
-      </motion.div>
+              {project.metric && (
+                <p
+                  data-agent={badgeAgent[project.badge]}
+                  className="mt-5 flex items-baseline gap-2.5"
+                >
+                  <span className="stat-number text-3xl font-semibold tracking-[-0.045em]">
+                    {project.metric.value}
+                  </span>
+                  <span className="font-mono text-xs text-ink-faint">{project.metric.label}</span>
+                </p>
+              )}
+
+              {/* Details: always open on featured cards, collapsible elsewhere. */}
+              <div
+                className={cn(
+                  'grid transition-[grid-template-rows,opacity] duration-500 ease-out-quint',
+                  open ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+                )}
+              >
+                <ul inert={!open} className="space-y-2.5 overflow-hidden">
+                  {project.points.map((point, index) => (
+                    <li
+                      key={point}
+                      className={cn(
+                        'relative pl-5 text-sm leading-relaxed text-ink-soft before:absolute before:top-[0.8em] before:left-0 before:h-px before:w-2.5 before:bg-select',
+                        index === 0 && 'mt-5'
+                      )}
+                    >
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <ul className="mt-auto flex flex-wrap gap-1.5 pt-6">
+                {project.tags.map((tag) => (
+                  <li key={tag} className="tag">
+                    {tag}
+                  </li>
+                ))}
+              </ul>
+
+              {!project.featured && (
+                <button
+                  type="button"
+                  aria-expanded={open}
+                  onClick={() => toggle(slug)}
+                  className="mt-5 flex items-center gap-2 self-start font-mono text-xs text-ink-faint transition-colors hover:text-ink"
+                >
+                  <Plus
+                    className={cn(
+                      'size-3.5 transition-transform duration-300 ease-out-quint',
+                      open && 'rotate-45'
+                    )}
+                  />
+                  {open ? 'Hide details' : 'How it was built'}
+                </button>
+              )}
+            </article>
+          );
+        })}
+      </div>
     </Section>
   );
 }
