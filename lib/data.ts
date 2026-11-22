@@ -5,12 +5,12 @@
 
 export const profile = {
   name: 'Sujith Makam',
-  role: 'AI & Cloud Engineer',
+  role: 'AI Engineer & Cloud Engineer',
   tagline:
-    "I'm Sujith Makam, a Software Engineer at CGI. I ship production agentic and conversational AI, RAG platforms and AWS infrastructure-as-code built to hold when a region goes dark.",
+    "I'm Sujith Makam, a Software Engineer at CGI building and shipping LLM, agentic and generative-AI systems into production on Azure and AWS, backed by RAG pipelines, evals and Infrastructure-as-Code.",
   summary: [
-    'Software Engineer with **1+ year of experience** shipping production AI and cloud systems across **AWS and Azure**. At CGI I build enterprise **generative-AI, conversational-AI and multi-agent** solutions on **Azure AI Foundry**, **Amazon Bedrock** and **Azure OpenAI**, backed by RAG pipelines, LLM evaluation and guardrails — then provision the contact-center platforms they run on as Infrastructure-as-Code with **AWS CDK**.',
-    'Before CGI I was a research intern at **IISc Bangalore**, pruning LLMs and tuning GPT-2 down at the cache line for a **4× attention-layer speedup**. With **four IEEE publications** in machine learning and network security, I chase the problems where model quality, systems performance and reliability all have to hold at once — from disaster recovery, automation and observability to serverless, distributed systems.',
+    'AI and Cloud engineer who builds and ships **LLM, agentic and generative-AI systems** into production on **Azure and AWS**. As a Software Engineer at CGI, I develop enterprise GenAI and multi-agent solutions across **Azure AI Foundry**, **Azure OpenAI** and **AWS**, backed by RAG pipelines, evals and Infrastructure-as-Code, delivering measurable outcomes: **40,000+ calls auto-evaluated** and **3–7 minutes** cut from Average Handle Time.',
+    '**1+ year of experience** building production systems across AWS and Azure, with hands-on expertise in cloud infrastructure, **Infrastructure-as-Code**, disaster recovery, automation, observability and distributed systems. Experienced in **AWS CDK**, serverless architectures and AI/LLM platforms, and author of **4 IEEE-published papers** in machine learning and network security.',
   ],
   location: 'Bengaluru, India',
   email: 'makamsujith2004@gmail.com',
@@ -145,7 +145,7 @@ export const experience: Experience[] = [
     period: 'Jul 2025 — Present',
     location: 'Bengaluru, India',
     kind: 'Full-time',
-    headline: 'Enterprise agentic AI, and the cloud it runs on.',
+    headline: 'Enterprise conversational and agentic AI, and the Infrastructure-as-Code behind it.',
     points: [
       'Designed and deployed enterprise conversational and agentic-AI solutions — task-specific agents on Azure AI Foundry, Google ADK and CrewAI, wired into Azure OpenAI, Cognigy, the Genesys CCaaS platform and AWS to automate customer-support workflows — reducing Average Handle Time (AHT) by **3–7 minutes**.',
       'Built an agentic QA platform on Amazon Bedrock that scores **100% of call transcripts** against **24 quality parameters**, automating **90%+ of QA** that was previously manual and sampled only a fraction of calls. **40,000+ calls** evaluated; later ported to Azure Functions and Cosmos DB.',
@@ -179,7 +179,7 @@ export const experience: Experience[] = [
     period: 'May 2024 — Jul 2024',
     location: 'Bengaluru, India',
     kind: 'Research',
-    headline: 'Making GPT-2 faster, one cache line at a time.',
+    headline: 'LLM pruning and GPT-2 inference optimization.',
     points: [
       'Investigated LLM pruning techniques for GPT-2, optimizing the attention and feed-forward layers for inference efficiency.',
       'Profiled GPT-2 with Intel VTune to isolate cache and memory bottlenecks, achieving a **4× speedup** in attention-layer execution.',

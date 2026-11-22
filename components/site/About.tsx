@@ -11,7 +11,7 @@ export default function About() {
       id="about"
       index="01"
       label="About"
-      title="Half AI engineer. Half cloud engineer. *Fully in production.*"
+      title="LLM, agentic and GenAI systems, *in production.*"
     >
       <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
         <div className="space-y-6 lg:col-span-7">

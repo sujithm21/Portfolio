@@ -56,16 +56,16 @@ export default function Hero() {
 
         <p className="display mt-4">
           <span {...b('hero/headline-1', 4)} data-b-hero="4" className="block">
-            <Kinetic text="AI agents that" />
-            <mark className="sel word" data-agent="planner" style={{ '--w': 3 } as CSSProperties}>
-              think.
+            <Kinetic text="I build and ship" />
+            <mark className="sel word" data-agent="planner" style={{ '--w': 4 } as CSSProperties}>
+              agentic AI
               <AgentCursor agent="planner" className="parked" data-pos="top" />
             </mark>
           </span>
           <span {...b('hero/headline-2', 5)} data-b-hero="5" className="mt-1 block">
-            <Kinetic text="Cloud that doesn’t" from={2} />
-            <mark className="sel word" data-agent="deployer" style={{ '--w': 5 } as CSSProperties}>
-              blink.
+            <Kinetic text="systems into" />
+            <mark className="sel word" data-agent="deployer" style={{ '--w': 2 } as CSSProperties}>
+              production.
               <AgentCursor agent="deployer" className="parked" data-pos="bottom" />
             </mark>
           </span>

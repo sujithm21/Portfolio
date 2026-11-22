@@ -12,7 +12,7 @@ export default function Credentials() {
       id="credentials"
       index="06"
       label="Certifications & Achievements"
-      title="The *receipts.*"
+      title="Badges, courses and *awards.*"
       intro="Certifications earned and moments that mattered along the way."
     >
       <div className="grid gap-5 lg:grid-cols-12">

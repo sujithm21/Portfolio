@@ -26,7 +26,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sujithmakam.vercel.
 
 const title = `${profile.name} — ${profile.role}`;
 const description =
-  'Sujith Makam is an AI & Cloud Engineer building production agentic and conversational AI systems, RAG platforms and AWS CDK infrastructure. 4 IEEE publications in ML and network security.';
+  'Sujith Makam is an AI Engineer and Cloud Engineer who builds and ships LLM, agentic and generative-AI systems into production on Azure and AWS. 4 IEEE publications in ML and network security.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
