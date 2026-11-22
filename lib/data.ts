@@ -566,8 +566,6 @@ export const skillBuckets: SkillBucket[] = [
       'Confluence',
       'GitLab',
       'Intel VTune',
-      'Claude',
-      'Copilot',
     ],
   },
 ];
