@@ -1,48 +1,49 @@
 import './globals.css';
-import type { Metadata } from 'next';
-import { Inter, Space_Grotesk, JetBrains_Mono } from 'next/font/google';
-import { ThemeProvider } from '@/components/theme-provider';
-import { profile } from '@/lib/data';
+import 'lenis/dist/lenis.css';
+import type { Metadata, Viewport } from 'next';
+import localFont from 'next/font/local';
+import { GeistMono } from 'geist/font/mono';
+import { GeistSans } from 'geist/font/sans';
+import Backdrop from '@/components/site/Backdrop';
+import Pointer from '@/components/site/Pointer';
+import BuildDirector from '@/components/build/BuildDirector';
+import SmoothScroll from '@/components/site/SmoothScroll';
+import { education, featuredCertifications, profile, skillBuckets } from '@/lib/data';
 
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-sans',
-  display: 'swap',
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ['latin'],
-  variable: '--font-display',
-  display: 'swap',
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
-  variable: '--font-mono',
+// Italic serif used for the accent words in headings. Bundled locally so the
+// build never depends on a font CDN.
+const instrumentSerif = localFont({
+  src: './fonts/InstrumentSerif-Italic.woff2',
+  variable: '--font-instrument-serif',
+  weight: '400',
+  style: 'italic',
   display: 'swap',
 });
 
 // Pinned to the production domain so canonical/OG URLs never point at a
-// per-deployment hash hostname.
+// per-deployment hostname.
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sujithmakam.vercel.app';
 
+const title = `${profile.name} — ${profile.role}`;
 const description =
-  'Sujith Makam — AI & Cloud Engineer building production agentic-AI systems, RAG platforms and AWS CDK infrastructure. 4 IEEE publications in ML and network security.';
+  'Sujith Makam is an AI & Cloud Engineer building production agentic and conversational AI systems, RAG platforms and AWS CDK infrastructure. 4 IEEE publications in ML and network security.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: {
-    default: `${profile.name} — ${profile.role}`,
-    template: `%s — ${profile.name}`,
-  },
+  title: { default: title, template: `%s — ${profile.name}` },
   description,
   keywords: [
     'Sujith Makam',
     'AI Engineer',
     'Cloud Engineer',
     'Agentic AI',
+    'Generative AI',
+    'Conversational AI',
+    'LLM',
     'AWS CDK',
     'Azure AI Foundry',
+    'Amazon Bedrock',
+    'Cognigy',
     'RAG',
     'Multi-Agent Systems',
     'Infrastructure as Code',
@@ -54,33 +55,72 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     url: siteUrl,
-    title: `${profile.name} — ${profile.role}`,
+    title,
     description,
     siteName: `${profile.name} · Portfolio`,
     locale: 'en_US',
   },
-  twitter: {
-    card: 'summary_large_image',
-    title: `${profile.name} — ${profile.role}`,
-    description,
-  },
+  twitter: { card: 'summary_large_image', title, description },
   robots: { index: true, follow: true },
+};
+
+/** Machine-readable profile (schema.org Person) for search engines and parsers. */
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  jobTitle: profile.role,
+  description,
+  url: siteUrl,
+  email: `mailto:${profile.email}`,
+  telephone: profile.phone,
+  address: { '@type': 'PostalAddress', addressLocality: 'Bengaluru', addressCountry: 'IN' },
+  worksFor: { '@type': 'Organization', name: 'CGI' },
+  alumniOf: { '@type': 'CollegeOrUniversity', name: education.institution },
+  sameAs: Object.values(profile.socials),
+  knowsAbout: Array.from(new Set(skillBuckets.flatMap((bucket) => bucket.items))),
+  hasCredential: featuredCertifications.map((cert) => ({
+    '@type': 'EducationalOccupationalCredential',
+    name: cert.name,
+    recognizedBy: { '@type': 'Organization', name: cert.issuer },
+  })),
+};
+
+export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#f7f9fc' },
-    { media: '(prefers-color-scheme: dark)', color: '#05070d' },
+    { media: '(prefers-color-scheme: light)', color: '#f6f5f1' },
+    { media: '(prefers-color-scheme: dark)', color: '#08080a' },
   ],
 };
 
+/**
+ * Runs before first paint. It applies the saved theme and sets the build mode:
+ * "first" (the cursors build the page, on every load) or "off" (reduced
+ * motion). If the page script never starts, it falls back to "off" so content
+ * can never stay hidden.
+ */
+const bootScript = `(function(){var d=document.documentElement;try{if(localStorage.getItem('theme')==='light')d.classList.remove('dark')}catch(e){}d.dataset.build=matchMedia('(prefers-reduced-motion: reduce)').matches?'off':'first';setTimeout(function(){if(!window.__buildReady)d.dataset.build='off'},4000)})()`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} font-sans`}
-        suppressHydrationWarning
-      >
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
-          {children}
-        </ThemeProvider>
+    <html
+      lang="en"
+      className={`dark ${GeistSans.variable} ${GeistMono.variable} ${instrumentSerif.variable}`}
+      suppressHydrationWarning
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: bootScript }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
+      <body>
+        <SmoothScroll />
+        <Backdrop />
+        {children}
+        <BuildDirector />
+        <Pointer />
       </body>
     </html>
   );

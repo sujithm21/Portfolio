@@ -1,104 +1,66 @@
-'use client';
-
-import { Briefcase, Code2, FlaskConical } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import { experience } from '@/lib/data';
-import { GlassCard, Pill, Reveal, Section, SectionHeading } from './primitives';
-
-const icons = [Briefcase, FlaskConical, Code2];
+import { slugify } from '@/lib/utils';
+import { b, Rich, Section } from './ui';
 
 export default function Experience() {
   return (
-    <Section id="experience">
-      <SectionHeading
-        index="02"
-        kicker="Experience"
-        title={
-          <>
-            Where I have <span className="accent-text">shipped</span>
-          </>
-        }
-        intro="Enterprise AI platforms in production, and systems research on how models actually execute."
-      />
+    <Section
+      id="experience"
+      index="02"
+      label="Experience"
+      title="Where the work *shipped.*"
+      intro="Enterprise AI platforms running in production, and research into how models actually execute."
+    >
+      <div className="space-y-5">
+        {experience.map((job, i) => {
+          const slug = slugify(job.company.split(' (')[0]);
+          return (
+            <article
+              key={job.company}
+              {...b(`experience/${slug}`, i)}
+              data-frame={`experience/${slug}`}
+              className="card selectable grid gap-8 p-6 sm:p-9 lg:grid-cols-12 lg:gap-12"
+            >
+              <div className="lg:col-span-5">
+                <p className="eyebrow">{job.period}</p>
+                <h3 className="mt-4 text-3xl leading-tight font-semibold tracking-[-0.035em]">
+                  {job.company}
+                </h3>
+                <p className="mt-2 text-ink-soft">
+                  {job.role} · {job.kind}
+                </p>
+                <p className="serif grad-text mt-7 text-2xl leading-snug sm:text-[1.7rem]">
+                  {job.headline}
+                </p>
+                <p className="mt-7 flex items-center gap-1.5 font-mono text-xs text-ink-faint">
+                  <MapPin className="size-3.5" />
+                  {job.location}
+                </p>
+              </div>
 
-      <div className="relative">
-        {/* timeline rail */}
-        <span
-          aria-hidden
-          className="absolute left-[19px] top-2 hidden w-px sm:block"
-          style={{
-            height: 'calc(100% - 2rem)',
-            background:
-              'linear-gradient(180deg, hsl(var(--cyan) / 0.6), hsl(var(--violet) / 0.4), transparent)',
-          }}
-        />
-
-        <div className="space-y-8">
-          {experience.map((job, i) => {
-            const Icon = icons[i] ?? Briefcase;
-            return (
-              <Reveal key={job.company} delay={i * 0.1}>
-                <div className="relative sm:pl-[62px]">
-                  {/* node */}
-                  <span
-                    aria-hidden
-                    className="absolute left-0 top-3 hidden h-10 w-10 place-items-center rounded-full border border-hairline bg-background sm:grid"
-                    style={{ boxShadow: '0 0 0 6px hsl(var(--background))' }}
-                  >
-                    <span
-                      className="grid h-full w-full place-items-center rounded-full"
-                      style={{
-                        background: `hsl(var(--${['cyan', 'violet', 'emerald'][i] ?? 'cyan'}) / 0.12)`,
-                        color: `hsl(var(--${['cyan', 'violet', 'emerald'][i] ?? 'cyan'}))`,
-                      }}
+              <div className="lg:col-span-7">
+                <ul className="space-y-4">
+                  {job.points.map((point) => (
+                    <li
+                      key={point}
+                      className="relative pl-7 leading-relaxed text-ink-soft before:absolute before:top-[0.8em] before:left-0 before:h-px before:w-3.5 before:bg-select"
                     >
-                      <Icon className="h-4 w-4" />
-                    </span>
-                  </span>
-
-                  <GlassCard className="p-6 sm:p-7">
-                    <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-2">
-                      <div>
-                        <h3 className="font-display text-xl font-semibold tracking-tight sm:text-2xl">
-                          {job.company}
-                        </h3>
-                        <p className="mt-1 text-[15px] font-medium text-[hsl(var(--cyan))]">
-                          {job.role}
-                        </p>
-                      </div>
-                      <div className="text-left sm:text-right">
-                        <p className="font-mono text-xs text-muted-foreground">{job.period}</p>
-                        <p className="mt-1 font-mono text-[11px] text-muted-foreground/80">
-                          {job.location} · {job.kind}
-                        </p>
-                      </div>
-                    </div>
-
-                    <ul className="mt-5 space-y-3">
-                      {job.points.map((point) => (
-                        <li key={point} className="flex gap-3">
-                          <span
-                            aria-hidden
-                            className="mt-[9px] h-1.5 w-1.5 shrink-0 rotate-45"
-                            style={{ background: 'hsl(var(--cyan) / 0.75)' }}
-                          />
-                          <span className="text-sm leading-relaxed text-muted-foreground text-pretty">
-                            {point}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    <div className="mt-6 flex flex-wrap gap-1.5">
-                      {job.stack.map((tech) => (
-                        <Pill key={tech}>{tech}</Pill>
-                      ))}
-                    </div>
-                  </GlassCard>
-                </div>
-              </Reveal>
-            );
-          })}
-        </div>
+                      <Rich text={point} />
+                    </li>
+                  ))}
+                </ul>
+                <ul className="mt-8 flex flex-wrap gap-1.5">
+                  {job.stack.map((item) => (
+                    <li key={item} className="tag">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </article>
+          );
+        })}
       </div>
     </Section>
   );

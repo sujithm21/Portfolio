@@ -1,154 +1,95 @@
-'use client';
-
-import { Award, BadgeCheck, Medal, Microscope, Star, Trophy, type LucideIcon } from 'lucide-react';
 import Image from 'next/image';
+import { Check, Medal, Microscope, Star, Trophy } from 'lucide-react';
 import { achievements, certifications, featuredCertifications } from '@/lib/data';
-import { GlassCard, Reveal, Section, SectionHeading } from './primitives';
+import { slugify } from '@/lib/utils';
+import { b, Section } from './ui';
 
-const achievementIcons: Record<string, LucideIcon> = {
-  trophy: Trophy,
-  microscope: Microscope,
-  medal: Medal,
-  star: Star,
-};
+const icons = { trophy: Trophy, microscope: Microscope, medal: Medal, star: Star } as const;
 
 export default function Credentials() {
   return (
-    <Section id="credentials">
-      <SectionHeading
-        index="06"
-        kicker="Credentials"
-        title={
-          <>
-            Certifications & <span className="accent-text">achievements</span>
-          </>
-        }
-      />
+    <Section
+      id="credentials"
+      index="06"
+      label="Certifications & Achievements"
+      title="The *receipts.*"
+      intro="Certifications earned and moments that mattered along the way."
+    >
+      <div className="grid gap-5 lg:grid-cols-12">
+        <div className="space-y-4 lg:col-span-5">
+          {featuredCertifications.map((cert, i) => (
+            <div
+              key={cert.name}
+              {...b(`credentials/${slugify(cert.name)}`, i)}
+              data-frame={`cert/${slugify(cert.name)}`}
+              data-tilt
+              className="card selectable flex items-center gap-5 p-5"
+            >
+              <Image
+                src={cert.badge}
+                alt={`${cert.name} badge`}
+                width={84}
+                height={84}
+                className="size-[84px] shrink-0"
+              />
+              <div>
+                <p className="eyebrow">{cert.issuer}</p>
+                <h3 className="mt-1.5 text-lg leading-snug font-semibold tracking-tight">
+                  {cert.name}
+                </h3>
+                <p className="mt-2">
+                  <span className="tag">{cert.exam}</span>
+                </p>
+              </div>
+            </div>
+          ))}
 
-      <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-12">
-        {/* ---- Achievements ---- */}
-        <div>
-          <Reveal>
-            <h3 className="mb-5 flex items-center gap-2 font-display text-lg font-semibold">
-              <Trophy className="h-4 w-4 text-[hsl(var(--emerald))]" />
-              Highlights
-            </h3>
-          </Reveal>
-
-          <div className="space-y-3">
-            {achievements.map((item, i) => {
-              const Icon = achievementIcons[item.icon] ?? Award;
-              return (
-                <Reveal key={item.title} delay={i * 0.07}>
-                  <GlassCard className="flex gap-4 p-5">
-                    <span className="mt-0.5 grid h-10 w-10 shrink-0 place-items-center rounded-md border border-[hsl(var(--emerald)/0.28)] bg-[hsl(var(--emerald)/0.1)] text-[hsl(var(--emerald))]">
-                      <Icon className="h-[18px] w-[18px]" />
-                    </span>
-                    <div className="min-w-0">
-                      <div className="flex flex-wrap items-baseline gap-x-3">
-                        <h4 className="font-display text-[15px] font-semibold leading-snug">
-                          {item.title}
-                        </h4>
-                        <span className="font-mono text-[11px] text-muted-foreground">
-                          {item.year}
-                        </span>
-                      </div>
-                      <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground text-pretty">
-                        {item.detail}
-                      </p>
-                    </div>
-                  </GlassCard>
-                </Reveal>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* ---- Certifications ---- */}
-        <div>
-          <Reveal>
-            <h3 className="mb-5 flex items-center gap-2 font-display text-lg font-semibold">
-              <BadgeCheck className="h-4 w-4 text-[hsl(var(--cyan))]" />
-              Certifications
-            </h3>
-          </Reveal>
-
-          <div className="mb-5 grid gap-3">
-            {featuredCertifications.map((certification, ci) => (
-              <Reveal key={certification.exam} delay={ci * 0.08}>
-                <GlassCard
-                  className="overflow-hidden border-[hsl(var(--cyan)/0.35)] bg-[linear-gradient(135deg,hsl(var(--cyan)/0.08),transparent_58%,hsl(var(--violet)/0.08))] p-5"
-                  interactive={false}
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex min-w-0 items-center gap-3">
-                      <Image
-                        src={certification.badge}
-                        alt={`${certification.name} certification badge`}
-                        width={160}
-                        height={160}
-                        className="h-20 w-20 shrink-0 rounded-md object-contain"
-                      />
-                      <div className="min-w-0">
-                        <span className="mb-1.5 inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--cyan)/0.3)] bg-[hsl(var(--cyan)/0.1)] px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-[hsl(var(--cyan))]">
-                          <BadgeCheck className="h-3.5 w-3.5" />
-                          AWS Certified
-                        </span>
-                        <h4 className="font-display text-base font-semibold leading-snug">
-                          {certification.name}
-                        </h4>
-                        <p className="mt-1 text-xs text-muted-foreground">
-                          {certification.issuer}
-                        </p>
-                      </div>
-                    </div>
-                    <span className="shrink-0 rounded-md border border-[hsl(var(--violet)/0.3)] bg-[hsl(var(--violet)/0.1)] px-2.5 py-1.5 font-mono text-xs font-semibold text-[hsl(var(--violet))]">
-                      {certification.exam}
-                    </span>
-                  </div>
-                  <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="Associated skills">
-                    {certification.skills.map((skill) => (
-                      <li
-                        key={skill}
-                        className="rounded-full bg-secondary/80 px-2.5 py-1 text-[11px] text-muted-foreground"
-                      >
-                        {skill}
-                      </li>
-                    ))}
-                  </ul>
-                </GlassCard>
-              </Reveal>
-            ))}
-          </div>
-
-          <div className="space-y-4">
-            {certifications.map((group, gi) => (
-              <Reveal key={group.issuer} delay={gi * 0.08}>
-                <GlassCard className="overflow-hidden p-0" interactive={false}>
-                  <div className="flex items-center justify-between border-b border-hairline px-5 py-3.5">
-                    <span className="font-display text-sm font-semibold tracking-tight">
-                      {group.issuer}
-                    </span>
-                    <span className="font-mono text-[11px] text-muted-foreground">
-                      {String(group.items.length).padStart(2, '0')} programs
-                    </span>
-                  </div>
-                  <ul className="divide-y divide-[hsl(var(--hairline))]">
-                    {group.items.map((item) => (
-                      <li
-                        key={item}
-                        className="flex items-center gap-3 px-5 py-3 text-sm transition-colors hover:bg-[hsl(var(--cyan)/0.06)]"
-                      >
-                        <BadgeCheck className="h-4 w-4 shrink-0 text-[hsl(var(--cyan)/0.8)]" />
-                        <span className="text-muted-foreground">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </GlassCard>
-              </Reveal>
+          <div {...b('credentials/courses', 2)} className="card p-6">
+            {certifications.map((group) => (
+              <div key={group.issuer} className="not-first:mt-6">
+                <p className="eyebrow">
+                  {group.issuer} · {group.items.length}
+                </p>
+                <ul className="mt-3 space-y-2">
+                  {group.items.map((item) => (
+                    <li key={item} className="flex items-start gap-2.5 text-sm text-ink-soft">
+                      <Check className="mt-0.5 size-4 shrink-0 text-green" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
           </div>
         </div>
+
+        <ol className="space-y-4 lg:col-span-7">
+          {achievements.map((item, i) => {
+            const Icon = icons[item.icon as keyof typeof icons];
+            return (
+              <li
+                key={item.title}
+                {...b(`credentials/achievement-${i + 1}`, i)}
+                data-frame={`achievement-${i + 1}`}
+                data-tilt
+                className="card selectable flex gap-5 p-6"
+              >
+                <span className="grid size-11 shrink-0 place-items-center rounded-xl border border-line-strong bg-raised text-amber">
+                  <Icon className="size-5" />
+                </span>
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                    <h3 className="text-lg leading-snug font-semibold tracking-tight">
+                      {item.title}
+                    </h3>
+                    <span className="font-mono text-xs text-ink-faint">{item.year}</span>
+                  </div>
+                  <p className="mt-2 leading-relaxed text-pretty text-ink-soft">{item.detail}</p>
+                </div>
+              </li>
+            );
+          })}
+        </ol>
       </div>
     </Section>
   );
