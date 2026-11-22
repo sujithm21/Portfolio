@@ -102,7 +102,12 @@ lib/
 public/
   resume/                Résumé PDFs
   *.png                  Certification badges
+docs/
+  Portfolio-Tech-Stack-and-Build.docx   Tech stack and build notes (Word)
 ```
+
+For a fuller write-up of the stack, the design system and how the cursor build works, see
+[`docs/Portfolio-Tech-Stack-and-Build.docx`](docs/Portfolio-Tech-Stack-and-Build.docx).
 
 ## Editing content
 
